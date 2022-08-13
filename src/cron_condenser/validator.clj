@@ -1,7 +1,8 @@
 (ns cron-condenser.validator
   (:require [clojure.spec.alpha :as s]
             [clojure.string :as string]
-            [cron-condenser.utils :refer [->byte index-of]])
+            [cron-condenser.utils :refer [->byte index-of]]
+            [cron-condenser.constants :refer :all])
   (:import [clojure.lang PersistentVector]
            [clojure.lang PersistentHashSet]))
 
@@ -12,6 +13,12 @@
     (= (min (max lower value)
             (dec upper))
        value)))
+
+(def in-minute-bounds?   (in-bounds? (:lower minute-bounds)   (:upper minute-bounds)))
+(def in-hour-bounds?     (in-bounds? (:lower hour-bounds)     (:upper hour-bounds)))
+(def in-day-bounds?      (in-bounds? (:lower day-bounds)      (:upper day-bounds)))
+(def in-month-bounds?    (in-bounds? (:lower month-bounds)    (:upper month-bounds)))
+(def in-week-day-bounds? (in-bounds? (:lower week-day-bounds) (:upper week-day-bounds)))
 
 (defn ^Boolean valid-range?
   [^String range-str in-section-bounds?]
@@ -32,12 +39,6 @@
          (if-some [step-value (->byte (second ratio))]
            (in-section-bounds? step-value)
            false))))
-
-(def in-minute-bounds?   (in-bounds? 0 60))
-(def in-hour-bounds?     (in-bounds? 0 24))
-(def in-day-bounds?      (in-bounds? 1 32))
-(def in-month-bounds?    (in-bounds? 1 12))
-(def in-week-day-bounds? (in-bounds? 0  7))
 
 (s/def :cron/minute
   (s/and string?
@@ -83,8 +84,6 @@
            (and (= left "*")
                 (contains? names right))))))
 
-(def months ["JAN" "FEB" "MAR" "APR" "MAY" "JUN" "JUL" "AUG" "SEP" "OCT" "NOV" "DEC"])
-
 (s/def :cron/month
   (s/and string?
          (s/or :all          #(= "*" %)
@@ -93,11 +92,9 @@
                                 false)
                :range        #(valid-range? % in-month-bounds?)
                :step         #(valid-step? % in-month-bounds?)
-               :named-single (comp not nil? #(index-of % months))
-               :named-range  #(valid-named-range? % months)
-               :named-step   #(valid-named-step? % months))))
-
-(def week-days ["SUN" "MON" "TUE" "WED" "THU" "FRI" "SAT"])
+               :named-single (comp not nil? #(index-of % month-names))
+               :named-range  #(valid-named-range? % month-names)
+               :named-step   #(valid-named-step? % month-names))))
 
 (s/def :cron/day-of-week
   (s/and string?
