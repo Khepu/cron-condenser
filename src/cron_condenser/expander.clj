@@ -6,6 +6,8 @@
    [cron-condenser.utils :refer [->byte index-of]]
    [cron-condenser.validator :refer :all])
   (:import
+   [clojure.lang PersistentHashSet]
+   [clojure.lang PersistentList]
    [cron_condenser.validator CronExpression]))
 
 
@@ -224,11 +226,11 @@
                 (:upper week-day-bounds)
                 step))))
 
-(defn segment
+(defn ^PersistentList segment
   [cron-segment]
   (string/split cron-segment #","))
 
-(defn expand-segment
+(defn ^PersistentHashSet expand-segment
   [cron-segment spec expander]
   (->> cron-segment
        (map segment)
@@ -238,7 +240,7 @@
        flatten
        (into #{})))
 
-(defn expand
+(defn ^CronExpression expand
   [^CronExpression cron-expression]
   (let [{:keys [minute hour day month week-day]} cron-expression]
     (map->CronExpression {:minute   (expand-segment minute   :cron/minute   expand-minute)
