@@ -1,8 +1,12 @@
 (ns cron-condenser.expander
   (:require
    [clojure.string :as string]
+   [clojure.spec.alpha :as s]
+   [cron-condenser.constants :refer :all]
    [cron-condenser.utils :refer [->byte index-of]]
-   [cron-condenser.constants :refer :all]))
+   [cron-condenser.validator :refer :all])
+  (:import
+   [cron_condenser.validator CronExpression]))
 
 
 (defn parse-range
@@ -47,7 +51,6 @@
          (range (:lower minute-bounds)
                 (:upper minute-bounds)
                 step))))
-
 
 ;; Hour expansion
 
@@ -150,7 +153,7 @@
 
 (defmethod expand-month :named-range
   [[_ range-str]]
-  (let [[lower upper] (map inc (string/split range-str #"\-"))]
+  (let [[lower upper] (map (comp inc #(index-of % month-names)) (string/split range-str #"\-"))]
     (map str (range lower (inc upper)))))
 
 (defmethod expand-month :named-step
@@ -204,8 +207,10 @@
 
 (defmethod expand-week-day :named-range
   [[_ range-str]]
-  (let [[lower upper] (map inc (string/split range-str #"\-"))]
-    (map str (range lower (inc upper)))))
+  (let [[lower upper] (map (comp inc #(index-of % week-days)) (string/split range-str #"\-"))]
+    (map str
+         (range lower
+                (inc upper)))))
 
 (defmethod expand-week-day :named-step
   [[_ step-str]]
@@ -215,6 +220,29 @@
                  (index-of week-days)
                  inc)]
     (map str
-         (range (:lower  week-day-bounds)
+         (range (:lower week-day-bounds)
                 (:upper week-day-bounds)
                 step))))
+
+(defn segment
+  [cron-segment]
+  (string/split cron-segment #","))
+
+(defn expand-segment
+  [cron-segment spec expander]
+  (->> cron-segment
+       (map segment)
+       flatten
+       (map #(s/conform spec %))
+       (map expander)
+       flatten
+       (into #{})))
+
+(defn expand
+  [^CronExpression cron-expression]
+  (let [{:keys [minute hour day month week-day]} cron-expression]
+    (map->CronExpression {:minute   (expand-segment minute   :cron/minute   expand-minute)
+                          :hour     (expand-segment hour     :cron/hour     expand-hour)
+                          :day      (expand-segment day      :cron/day      expand-day)
+                          :month    (expand-segment month    :cron/month    expand-month)
+                          :week-day (expand-segment week-day :cron/week-day expand-week-day)})))
