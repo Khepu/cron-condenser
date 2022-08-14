@@ -114,7 +114,7 @@
        (map #(s/valid? spec %))
        (reduce #(and %1 %2))))
 
-(def cron-specs '(:cron/minute :cron/hour :cron/day-of-month :cron/month :cron/day-of-week))
+(def cron-specs '(:cron/minute :cron/hour :cron/day :cron/month :cron/week-day))
 
 (s/def :cron/expression
   (s/and string?
