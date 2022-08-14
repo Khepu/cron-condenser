@@ -6,7 +6,7 @@
   :dependencies [[org.clojure/clojure "1.10.3"]
                  [org.clojure/spec.alpha "0.3.218"]
 
-                 [org.suskalo/farolero "1.4.4"]]
+                 [org.clojure/math.combinatorics "0.1.6"]]
   :main ^:skip-aot cron-condenser.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all
