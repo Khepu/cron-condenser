@@ -58,7 +58,7 @@
                :range  #(valid-range? % in-hour-bounds?)
                :step   #(valid-step? % in-hour-bounds?))))
 
-(s/def :cron/day-of-month
+(s/def :cron/day
   (s/and string?
          (s/or :all    #(= "*" %)
                :single #(if-some [value (->byte %)]
@@ -96,7 +96,7 @@
                :named-range  #(valid-named-range? % month-names)
                :named-step   #(valid-named-step? % month-names))))
 
-(s/def :cron/day-of-week
+(s/def :cron/week-day
   (s/and string?
          (s/or :all          #(= "*" %)
                :single       #(if-some [value (->byte %)]
@@ -124,7 +124,7 @@
                  (map validate-segment cron-specs)
                  (every? identity)))))
 
-(defrecord cron-expression
+(defrecord CronExpression
     [^PersistentHashSet minute
      ^PersistentHashSet hour
      ^PersistentHashSet day
