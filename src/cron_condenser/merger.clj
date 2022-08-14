@@ -1,6 +1,6 @@
 (ns cron-condenser.merger
   (:require
-   [clojure.set :refer [join]]
+   [clojure.set :refer [union]]
    [cron-condenser.validator :refer [map->CronExpression]])
   (:import
    [cron_condenser.validator CronExpression]))
@@ -23,6 +23,6 @@
 (defn ^CronExpression merge
   [^CronExpression a ^CronExpression b]
   (->> '(:minute :hour :day :month :week-day)
-       (map #(vector % (join (a %) (b %))))
+       (map #(vector % (union (a %) (b %))))
        (into {})
        map->CronExpression))
