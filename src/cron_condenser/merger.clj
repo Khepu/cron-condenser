@@ -1,7 +1,6 @@
 (ns cron-condenser.merger
   (:require
-   [clojure.set :refer [union]]
-   [cron-condenser.cron-expression :refer [map->CronExpression]])
+   [clojure.set :refer [union]])
   (:import
    [cron_condenser.cron_expression CronExpression]))
 
