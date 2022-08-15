@@ -13,6 +13,7 @@
        (reduce #(and %1 %2))))
 
 (defn ^Boolean mergeable?
+  "Two crons can be merged iff they differ in only one of the columns."
   [^CronExpression a ^CronExpression b]
   (or (equal-for? a b '(:hour   :day  :month :week-day))
       (equal-for? a b '(:minute :day  :month :week-day))
