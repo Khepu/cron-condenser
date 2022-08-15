@@ -4,11 +4,12 @@
    [clojure.spec.alpha :as s]
    [cron-condenser.constants :refer :all]
    [cron-condenser.utils :refer [->byte index-of]]
-   [cron-condenser.validator :refer :all])
+   [cron-condenser.validator :refer :all]
+   [cron-condenser.cron-expression :refer [map->CronExpression]])
   (:import
    [clojure.lang PersistentHashSet]
    [clojure.lang PersistentList]
-   [cron_condenser.validator CronExpression]))
+   [cron_condenser.cron_expression CronExpression]))
 
 
 (defn parse-range

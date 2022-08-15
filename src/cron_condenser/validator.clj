@@ -1,10 +1,10 @@
 (ns cron-condenser.validator
-  (:require [clojure.spec.alpha :as s]
-            [clojure.string :as string]
-            [cron-condenser.utils :refer [->byte index-of]]
-            [cron-condenser.constants :refer :all])
-  (:import [clojure.lang PersistentVector]
-           [clojure.lang PersistentHashSet]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [clojure.string :as string]
+   [cron-condenser.utils :refer [->byte index-of]]
+   [cron-condenser.constants :refer :all])
+  (:import [clojure.lang PersistentVector]))
 
 
 (defn in-bounds?
@@ -123,10 +123,3 @@
             (->> segments
                  (map validate-segment cron-specs)
                  (every? identity)))))
-
-(defrecord CronExpression
-    [^PersistentHashSet minute
-     ^PersistentHashSet hour
-     ^PersistentHashSet day
-     ^PersistentHashSet month
-     ^PersistentHashSet week-day])
