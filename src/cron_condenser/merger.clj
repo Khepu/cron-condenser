@@ -8,7 +8,7 @@
 (defn ^Boolean equal-for?
   [^CronExpression a ^CronExpression b keywords]
   (->> keywords
-       (map #(= (a %) (b %)))
+       (map #(= (% a) (% b)))
        (reduce #(and %1 %2))))
 
 (defn mergeable?
