@@ -6,6 +6,7 @@
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [org.clojure/spec.alpha "0.3.218"]
 
+                 [macroz/tangle "0.2.2"]
                  [org.clojure/math.combinatorics "0.1.6"]]
   :main ^:skip-aot cron-condenser.core
   :target-path "target/%s"
