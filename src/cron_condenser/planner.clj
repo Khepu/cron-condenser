@@ -1,9 +1,10 @@
 (ns cron-condenser.planner
   (:require
    [clojure.set :refer [union intersection]]
-   [cron-condenser.merger :refer [mergeable? merge]])
+   [cron-condenser.merger :refer [mergeable?]])
   (:import
-   [clojure.lang PersistentHashSet]))
+   [clojure.lang PersistentHashSet]
+   [cron_condenser.cron_expression CronExpression]))
 
 (defn intersection-over-union
   "Intersection over union is used to quantify how compatible 2 crons are. As
@@ -14,15 +15,19 @@
         ab-intersection (count (intersection set-a set-b))]
     (/ ab-intersection ab-union)))
 
+(defn branch
+  [^PersistentHashSet crons ^CronExpression cron]
+  {cron (->> (disj crons cron)
+             (group-by #(mergeable? cron %))
+             #(dissoc % nil))})
+
 (defn merge-graph
   "Produces a graph of possible merges for each item in `crons` per cron segment."
+  #_{cron-0 {:minute [cron-1 ... cron-n]}}
   [^PersistentHashSet crons]
-  (map (fn [cron]
-         (dissoc (->> crons
-                      (filter #(not= % cron))
-                      (group-by #(mergeable? cron %)))
-                 nil))
-       crons))
+  (->> crons
+       (map #(branch crons %))
+       (apply merge)))
 
 (defn longest
   [a key-b matches-b]
