@@ -1,44 +1,26 @@
-# cron-condenser
+# Cron Condenser
 
-FIXME: description
+This tool aims to to reduce a list of cron expressions down to the minimum
+expressions needed to describe the same intervals as the original list.
 
-## Installation
+## When can 2 cron expressions?
 
-Download from http://example.com/FIXME.
+Two cron expressions can only be merged when they differ in only one segment.
+For example:
 
-## Usage
+```
+0 0 0 JAN *
+1 0 0 JAN *
+```
 
-FIXME: explanation
+can be merged into `1,2 0 0 JAN *` since they only differ in the `minute` segment while
 
-    $ java -jar cron-condenser-0.1.0-standalone.jar [args]
+```
+0 0 0 JAN *
+30 10 0 JAN *
+```
 
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2022 FIXME
-
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0.
-
-This Source Code may also be made available under the following Secondary
-Licenses when the conditions for such availability set forth in the Eclipse
-Public License, v. 2.0 are satisfied: GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version, with the GNU Classpath Exception which is available
-at https://www.gnu.org/software/classpath/license.html.
+cannot be merged. Merging them would introduce **2** new trigger times that were
+not present in any of the original expressions. `0,30 0,10 0 JAN *` would
+include also trigger at `0 10 0 JAN *` as well as `30 0 0 JAN *`. This does raise
+questions such as when `n` crons can be merged but this area is still unexplored.
