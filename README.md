@@ -13,7 +13,7 @@ For example:
 1 0 0 JAN *
 ```
 
-can be merged into `1,2 0 0 JAN *` since they only differ in the `minute` segment while
+can be merged into `0,1 0 0 JAN *` since they only differ in the `minute` segment while
 
 ```
 0 0 0 JAN *
