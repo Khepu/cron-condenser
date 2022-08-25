@@ -3,7 +3,7 @@
 This tool aims to to reduce a list of cron expressions down to the minimum
 expressions needed to describe the same intervals as the original list.
 
-## When can 2 cron expressions?
+## When can 2 cron expressions be merged?
 
 Two cron expressions can only be merged when they differ in only one segment.
 For example:
@@ -22,5 +22,4 @@ can be merged into `1,2 0 0 JAN *` since they only differ in the `minute` segmen
 
 cannot be merged. Merging them would introduce **2** new trigger times that were
 not present in any of the original expressions. `0,30 0,10 0 JAN *` would
-include also trigger at `0 10 0 JAN *` as well as `30 0 0 JAN *`. This does raise
-questions such as when `n` crons can be merged but this area is still unexplored.
+include also trigger at `0 10 0 JAN *` as well as `30 0 0 JAN *`.
