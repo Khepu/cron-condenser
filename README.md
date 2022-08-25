@@ -21,5 +21,5 @@ can be merged into `1,2 0 0 JAN *` since they only differ in the `minute` segmen
 ```
 
 cannot be merged. Merging them would introduce **2** new trigger times that were
-not present in any of the original expressions. `0,30 0,10 0 JAN *` would
-include also trigger at `0 10 0 JAN *` as well as `30 0 0 JAN *`.
+not present in any of the original expressions. `0,30 0,10 0 JAN *` would also
+trigger at `0 10 0 JAN *` as well as `30 0 0 JAN *`.
