@@ -1,41 +1,59 @@
 (ns cron-condenser.visualizer
   (:require
+   [clojure.java.io :refer [file copy]]
    [tangle.core :refer [graph->dot dot->image]]
-   [clojure.java.io :refer [file copy]]))
+   [cron-condenser.cron-expression :refer [CronExpression->str]])
+  (:import
+   [cron_condenser.cron_expression CronExpression]))
 
 
 (def colors {:minute   "blue"
              :hour     "red"
              :day      "green"
-             :month    "yellow"
+             :month    "orange"
              :week-day "pink"})
 
 (defn edge
-  [edge-type origin target]
-  [origin target {:color (colors edge-type)}])
+  [edge-type
+   ^CronExpression origin
+   ^CronExpression target]
+  [(keyword (CronExpression->str origin))
+   (keyword (CronExpression->str target))
+   {:color (colors edge-type)
+    :label (name edge-type)}])
 
 (defn normalize-edges
-  [edge-type origin targets]
+  [edge-type
+   ^CronExpression origin
+   targets]
   (mapv (partial edge edge-type origin) targets))
 
 (defn normalize-branch
-  [[cron merge-map]]
-  (mapv #(normalize-edges (first %)
-                          cron
-                          (second %))
-        merge-map))
+  [[^CronExpression cron merge-map]]
+  (apply concat
+         (mapv #(normalize-edges (first %) cron (second %)) merge-map)))
+
+(defn deduplicate
+  [edges]
+  (reduce (fn [unique [origin target opts]]
+            (if (some #{[origin target opts] [target origin opts]} unique)
+              unique
+              (conj unique [origin target opts])))
+          []
+          edges))
 
 (defn normalize-graph
   [merge-graph]
-  {:nodes (vals merge-graph)
-   :edges (mapv normalize-branch merge-graph)})
+  {:nodes (mapv (comp keyword CronExpression->str) (keys merge-graph))
+   :edges (deduplicate
+           (apply concat
+                  (mapv normalize-branch merge-graph)))})
 
 (defn draw-merge-graph
   [merge-graph]
   (let [{:keys [nodes edges]} (normalize-graph merge-graph)
-        _ (println nodes edges)
-        dot (graph->dot nodes edges {:node {:shape :circle}
-                                     :node->id identity
-                                     :node->descriptor identity})]
+        dot (graph->dot nodes edges {:node {:shape :rectangle}
+                                     :node->id (fn [n] (if (keyword? n) (name n) (:id n)))
+                                     :node->descriptor (fn [n] (when-not (keyword? n) n))})]
     (copy (dot->image dot "png")
           (file "resources/merge-graph.png"))))
