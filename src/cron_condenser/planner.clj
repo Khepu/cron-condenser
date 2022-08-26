@@ -16,10 +16,11 @@
     (/ ab-intersection ab-union)))
 
 (defn branch
-  [^PersistentHashSet crons ^CronExpression cron]
-  {cron (->> (disj crons cron)
-             (group-by #(mergeable? cron %))
-             #(dissoc % nil))})
+  [^PersistentHashSet crons
+   ^CronExpression cron]
+  (let [crons (disj crons cron)]
+    {cron (dissoc (group-by #(mergeable? cron %) crons)
+                  nil)}))
 
 (defn merge-graph
   "Produces a graph of possible merges for each item in `crons` per cron segment."
