@@ -17,8 +17,8 @@
   [edge-type
    ^CronExpression origin
    ^CronExpression target]
-  [(keyword (CronExpression->str origin))
-   (keyword (CronExpression->str target))
+  [(CronExpression->str origin)
+   (CronExpression->str target)
    {:color (colors edge-type)
     :label (name edge-type)}])
 
@@ -44,7 +44,7 @@
 
 (defn normalize-graph
   [merge-graph]
-  {:nodes (mapv (comp keyword CronExpression->str) (keys merge-graph))
+  {:nodes (mapv CronExpression->str (keys merge-graph))
    :edges (deduplicate
            (apply concat
                   (mapv normalize-branch merge-graph)))})
@@ -52,8 +52,6 @@
 (defn draw-merge-graph
   [merge-graph]
   (let [{:keys [nodes edges]} (normalize-graph merge-graph)
-        dot (graph->dot nodes edges {:node {:shape :rectangle}
-                                     :node->id (fn [n] (if (keyword? n) (name n) (:id n)))
-                                     :node->descriptor (fn [n] (when-not (keyword? n) n))})]
+        dot (graph->dot nodes edges {:node {:shape :rectangle}})]
     (copy (dot->image dot "png")
           (file "resources/merge-graph.png"))))
