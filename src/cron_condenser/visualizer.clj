@@ -50,8 +50,8 @@
                   (mapv normalize-branch merge-graph)))})
 
 (defn draw-merge-graph
-  [merge-graph]
+  [file-name merge-graph]
   (let [{:keys [nodes edges]} (normalize-graph merge-graph)
         dot (graph->dot nodes edges {:node {:shape :rectangle}})]
     (copy (dot->image dot "png")
-          (file "resources/merge-graph.png"))))
+          (file (str "resources/" file-name ".png")))))
