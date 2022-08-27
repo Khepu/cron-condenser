@@ -65,7 +65,7 @@ following expressions as input:
 30 12 1 APR 0
 ```
 
-![Cron condensing merge graphs][./doc/cron-condensing-large.gif]
+![Cron condensing merge graphs](./doc/cron-condensing-large.gif)
 
 ## Support
 
