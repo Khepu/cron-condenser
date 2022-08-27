@@ -22,8 +22,8 @@
         (equal-for? a b '(:minute :hour :day   :month))    :week-day
         :else nil))
 
-(defn ^CronExpression merge
+(defn ^CronExpression merge-crons
   [^CronExpression a ^CronExpression b segment]
-  (update-in a
-             segment
-             #(union % (b segment))))
+  (assoc a
+         segment
+         (union (segment a) (segment b))))
