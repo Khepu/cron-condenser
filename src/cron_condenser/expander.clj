@@ -239,7 +239,7 @@
        (map #(s/conform spec %))
        (map expander)
        flatten
-       (into #{})))
+       set))
 
 (defn ^CronExpression expand
   [^CronExpression cron-expression]

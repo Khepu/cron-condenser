@@ -1,6 +1,6 @@
 # Cron Condenser
 
-This tool aims to to reduce a list of cron expressions down to the minimum
+This tool aims to reduce a list of cron expressions down to the minimum
 expressions needed to describe the same intervals as the original list.
 
 ## When can 2 cron expressions be merged?

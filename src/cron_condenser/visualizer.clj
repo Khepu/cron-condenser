@@ -1,6 +1,6 @@
 (ns cron-condenser.visualizer
   (:require
-   [clojure.java.io :refer [file copy]]
+   [clojure.java.io :refer [copy]]
    [tangle.core :refer [graph->dot dot->image]]
    [cron-condenser.cron-expression :refer [CronExpression->str]])
   (:import

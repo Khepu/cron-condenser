@@ -24,7 +24,7 @@
   (let [merge-graph (->> crons
                          (map str->CronExpression)
                          (map expand)
-                         (into #{})
+                         set
                          ->merge-graph)]
     (loop [current-graph merge-graph
            iteration 1]

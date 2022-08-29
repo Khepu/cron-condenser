@@ -57,9 +57,9 @@
                                                          (merge-graph least-connected-origin)
                                                          node-connections)
             segment (mergeable? least-connected-origin least-connected-target)
-            nodes (->> merge-graph
-                       keys
-                       (into #{}))]
+            nodes (-> merge-graph
+                      keys
+                      set)]
         (-> nodes
             (disj least-connected-origin least-connected-target)
             (conj (merge-crons least-connected-origin least-connected-target segment))
