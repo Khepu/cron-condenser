@@ -4,6 +4,7 @@
    [tangle.core :refer [graph->dot dot->image]]
    [cron-condenser.cron-expression :refer [CronExpression->str]])
   (:import
+   [java.nio.file Paths]
    [cron_condenser.cron_expression CronExpression]))
 
 
@@ -50,8 +51,8 @@
                   (mapv normalize-branch merge-graph)))})
 
 (defn draw-merge-graph
-  [file-name merge-graph]
+  [directory file-name merge-graph]
   (let [{:keys [nodes edges]} (normalize-graph merge-graph)
         dot (graph->dot nodes edges {:node {:shape :rectangle}})]
     (copy (dot->image dot "png")
-          (file (str "resources/" file-name ".png")))))
+          (.. Paths (get directory (into-array [(str file-name ".png")])) toFile))))
