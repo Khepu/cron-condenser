@@ -4,7 +4,8 @@
    [clojure.string :as string]
    [cron-condenser.utils :refer [->byte index-of]]
    [cron-condenser.constants :refer :all])
-  (:import [clojure.lang PersistentVector]))
+  (:import
+   [clojure.lang PersistentVector]))
 
 
 (defn in-bounds?
@@ -123,3 +124,7 @@
             (->> segments
                  (map validate-segment cron-specs)
                  (every? identity)))))
+
+(defn ^Boolean cron-expression?
+  [^String cron]
+  (s/valid? :cron/expression cron))
