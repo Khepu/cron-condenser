@@ -15,7 +15,7 @@
 (defn ^CronExpression str->CronExpression
   [^String cron-str]
   (->> (string/split cron-str #" ")
-       (map set)
+       (map hash-set)
        (apply ->CronExpression)))
 
 (defn ^String CronExpression->str
