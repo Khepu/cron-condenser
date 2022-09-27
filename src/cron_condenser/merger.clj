@@ -7,9 +7,7 @@
 
 (defn ^Boolean equal-for?
   [^CronExpression a ^CronExpression b keywords]
-  (->> keywords
-       (map #(= (% a) (% b)))
-       (reduce #(and %1 %2))))
+  (every? #(= (% a) (% b)) keywords))
 
 (defn mergeable?
   "Two crons can be merged iff they differ in only one of the columns. Returns the
