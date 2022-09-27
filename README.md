@@ -3,6 +3,12 @@
 This tool aims to reduce a list of cron expressions down to the minimum
 expressions needed to describe the same intervals as the original list.
 
+## Usage
+
+```
+java -jar cron-condenser.jar [--draw ./path-to-save-visualizations] "cron-1" "cron-2" ... "cron-n"
+```
+
 ## When can 2 cron expressions be merged?
 
 Two cron expressions can only be merged when they differ in only one segment.
@@ -79,3 +85,4 @@ and supported features include:
 - Named values (JAN, TUE)
 - Step values (*/2)
 - Ranges (1-5)
+- Named Ranges (MON-TUE)

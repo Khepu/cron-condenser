@@ -7,7 +7,8 @@
    [cron-condenser.expander :refer [expand]]
    [cron-condenser.planner :refer [->merge-graph least-connected-merge]]
    [cron-condenser.visualizer :refer [draw-merge-graph]]
-   [cron-condenser.cron-expression :refer [str->CronExpression CronExpression->str]]))
+   [cron-condenser.cron-expression :refer [str->CronExpression CronExpression->str]])
+  (:gen-class))
 
 
 (def argument-options [[nil "--draw DIRECTORY" "Draw directory. If left out no visualization will be produced."
@@ -38,6 +39,7 @@
 (defn -main
   [& args]
   (let [{:keys [options arguments errors]} (parse-opts args argument-options)
+        _ (println args)
         {:keys [valid-cron invalid-cron]} (group-by #(if (cron-expression? %)
                                                        :valid-cron
                                                        :invalid-cron)
