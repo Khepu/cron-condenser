@@ -5,9 +5,14 @@ expressions needed to describe the same intervals as the original list.
 
 ## Usage
 
+
 ```
 java -jar cron-condenser.jar [--draw ./path-to-save-visualizations] "cron-1" "cron-2" ... "cron-n"
 ```
+
+### Requirements
+- JDK 11 or later
+- graphviz
 
 ## When can 2 cron expressions be merged?
 
