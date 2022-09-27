@@ -15,10 +15,18 @@
 (defn ^CronExpression str->CronExpression
   [^String cron-str]
   (->> (string/split cron-str #" ")
-       (map hash-set)
+       (map set)
        (apply ->CronExpression)))
 
 (defn ^String CronExpression->str
+  [^CronExpression cron]
+  (str (string/join "," (:minute   cron)) " "
+       (string/join "," (:hour     cron)) " "
+       (string/join "," (:day      cron)) " "
+       (string/join "," (:month    cron)) " "
+       (string/join "," (:week-day cron))))
+
+(defn ^String CronExpression->canonical-string
   [^CronExpression cron]
   (str (string/join "," (:minute   cron)) " "
        (string/join "," (:hour     cron)) " "

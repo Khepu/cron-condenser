@@ -20,7 +20,7 @@
     (apply println more)))
 
 (defn condense
-  [crons draw-path]
+  [crons ^String draw-path]
   (let [merge-graph (->> crons
                          (map str->CronExpression)
                          (map expand)
