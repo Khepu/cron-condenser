@@ -2,14 +2,15 @@
   (:require
    [clojure.set :refer [union]])
   (:import
-   [cron_condenser.cron_expression CronExpression]))
+   [cron_condenser.cron_expression CronExpression]
+   [clojure.lang Keyword]))
 
 
 (defn ^Boolean equal-for?
   [^CronExpression a ^CronExpression b keywords]
   (every? #(= (% a) (% b)) keywords))
 
-(defn mergeable?
+(defn ^Keyword mergeable?
   "Two crons can be merged iff they differ in only one of the columns. Returns the
   segment to merge on or nil if they cannot be merged"
   [^CronExpression a ^CronExpression b]

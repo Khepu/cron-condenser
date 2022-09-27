@@ -228,7 +228,7 @@
                 step))))
 
 (defn ^PersistentList segment
-  [cron-segment]
+  [^String cron-segment]
   (string/split cron-segment #","))
 
 (defn ^PersistentHashSet expand-segment

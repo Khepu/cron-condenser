@@ -22,14 +22,14 @@
        (map #(branch crons %))
        (apply merge)))
 
-(defn count-connections
+(defn ^Long count-connections
   [connection-map]
   (reduce-kv (fn [total-connections type connections]
                (+ total-connections (count connections)))
              0
              connection-map))
 
-(defn least-connected-node
+(defn ^CronExpression least-connected-node
   [origin origin-connections node-connections]
   (let [node-connections (dissoc node-connections origin)
         connection-set (reduce union (vals origin-connections))]
