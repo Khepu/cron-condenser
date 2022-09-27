@@ -39,7 +39,6 @@
 (defn -main
   [& args]
   (let [{:keys [options arguments errors]} (parse-opts args argument-options)
-        _ (println args)
         {:keys [valid-cron invalid-cron]} (group-by #(if (cron-expression? %)
                                                        :valid-cron
                                                        :invalid-cron)
