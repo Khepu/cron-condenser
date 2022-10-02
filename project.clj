@@ -7,6 +7,7 @@
                  [org.clojure/spec.alpha "0.3.218"]
 
                  [macroz/tangle "0.2.2"]]
+  :plugins [[lein-cloverage "1.2.2"]]
   :main ^:skip-aot cron-condenser.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all
