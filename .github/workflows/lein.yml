@@ -19,3 +19,8 @@ jobs:
       run: lein test
     - name: Lein jar
       run: lein uberjar
+    - name: Submit to Codecov
+      run: |
+        curl -Os https://uploader.codecov.io/latest/linux/codecov
+        chmod +x codecov
+        ./codecov
