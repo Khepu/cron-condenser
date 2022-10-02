@@ -17,9 +17,11 @@ jobs:
       run: lein deps
     - name: Run tests
       run: lein test
+    - name: Producce Coverage Report
+      run: lein cloverage --codecov
     - name: Lein jar
       run: lein uberjar
-    - name: Submit to Codecov
+    - name: Upload Coverage Report to Codecov
       run: |
         curl -Os https://uploader.codecov.io/latest/linux/codecov
         chmod +x codecov
