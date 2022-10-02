@@ -3,7 +3,7 @@
    [clojure.string :as string]
    [clojure.java.io :refer [file]]
    [clojure.tools.cli :refer [parse-opts]]
-   [cron-condenser.validator :refer [cron-expression?]]
+   [cron-condenser.validator :refer [cron-expression? explain-invalid]]
    [cron-condenser.expander :refer [expand]]
    [cron-condenser.planner :refer [->merge-graph least-connected-merge]]
    [cron-condenser.visualizer :refer [draw-merge-graph]]
@@ -13,7 +13,9 @@
 
 (def argument-options [[nil "--draw DIRECTORY" "Draw directory. If left out no visualization will be produced."
                         :validate [#(.exists (file %)) "Draw directory does not exist!"
-                                   #(.isDirectory (file %)) "Path provided for `--draw` is not a directory!"]]])
+                                   #(.isDirectory (file %)) "Path provided for `--draw` is not a directory!"]]
+                       ["-v" nil "Enables error verbosity."
+                        :id :verbosity]])
 
 (defn println-err
   [& more]
@@ -42,10 +44,15 @@
         {:keys [valid-cron invalid-cron]} (group-by #(if (cron-expression? %)
                                                        :valid-cron
                                                        :invalid-cron)
-                                                    arguments)]
+                                                    arguments)
+        invalid-cron-formatter (if (:verbosity options)
+                               #(str % " - " (explain-invalid %))
+                               identity)]
     (cond
       (seq invalid-cron) (println-err "The following cron expressions are invalid: \n"
-                                      (string/join "\n" invalid-cron))
+                                      (->> invalid-cron
+                                           (map invalid-cron-formatter)
+                                           (string/join "\n")))
       (seq errors)       (run! println-err errors)
       :else              (->> (condense valid-cron (:draw options))
                               keys

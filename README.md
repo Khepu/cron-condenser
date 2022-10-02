@@ -7,8 +7,10 @@ expressions needed to describe the same intervals as the original list.
 
 
 ```
-java -jar cron-condenser.jar [--draw ./path-to-save-visualizations] "cron-1" "cron-2" ... "cron-n"
+java -jar cron-condenser.jar [-v] [--draw ./path-to-save-visualizations] "cron-1" "cron-2" ... "cron-n"
 ```
+
+- `-v` will show more information about the problematic segments of each cron.
 
 ### Requirements
 - JDK 11 or later

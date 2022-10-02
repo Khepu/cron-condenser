@@ -128,3 +128,18 @@
 (defn ^Boolean cron-expression?
   [^String cron]
   (s/valid? :cron/expression cron))
+
+(defn ^String explain-invalid
+  [^String cron]
+  (let [segments (string/split cron #" ")
+        total-segments (count segments)]
+    (if (not= total-segments 5)
+      (str "Invalid number of segments. Found " total-segments " instead of 5!")
+      (->> (zipmap cron-specs segments)
+           (reduce-kv (fn [errors cron-spec segment]
+                        (if (not (s/valid? cron-spec segment))
+                          (conj errors (name cron-spec))
+                          errors))
+                      [])
+           (string/join ", ")
+           (str "The following segments did not pass validation: ")))))
