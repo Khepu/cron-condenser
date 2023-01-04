@@ -23,6 +23,11 @@
   (binding [*out* *err*]
     (apply println more)))
 
+(defn has-been-reduced?
+  [old-graph new-graph]
+  (> (-> old-graph keys count)
+     (-> new-graph keys count)))
+
 (defn condense
   [crons ^String draw-path]
   (let [merge-graph (->> crons
@@ -35,7 +40,7 @@
       (when (not (nil? draw-path))
         (draw-merge-graph draw-path (str "merge-graph-" (dec iteration)) current-graph))
       (let [new-graph (least-connected-merge current-graph)]
-        (if (= current-graph new-graph)
+        (if (has-been-reduced? current-graph new-graph)
           current-graph
           (recur new-graph (inc iteration)))))))
 
