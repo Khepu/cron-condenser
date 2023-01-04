@@ -7,6 +7,7 @@
    [cron-condenser.expander :refer [expand]]
    [cron-condenser.planner :refer [->merge-graph least-connected-merge]]
    [cron-condenser.visualizer :refer [draw-merge-graph]]
+   [cron-condenser.contractor :refer [contract]]
    [cron-condenser.cron-expression :refer [str->CronExpression CronExpression->str]])
   (:gen-class))
 
@@ -56,6 +57,7 @@
       (seq errors)       (run! println-err errors)
       :else              (->> (condense valid-cron (:draw options))
                               keys
+                              (map contract)
                               (map CronExpression->str)
                               (string/join "\n")
                               println))))
