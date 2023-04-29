@@ -50,8 +50,8 @@
                            (:lower week-day-bounds))) #{"*"}
       :else week-day-segment)))
 
-(defn ^CronExpression contract
-  [^CronExpression cron]
+(defn contract
+  ^CronExpression [^CronExpression cron]
   (->CronExpression (contract-minute   (:minute   cron))
                     (contract-hour     (:hour     cron))
                     (contract-day      (:day      cron))

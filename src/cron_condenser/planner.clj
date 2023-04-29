@@ -8,8 +8,7 @@
 
 
 (defn branch
-  [^PersistentHashSet crons
-   ^CronExpression cron]
+  [^PersistentHashSet crons ^CronExpression cron]
   (let [crons (disj crons cron)]
     {cron (dissoc (group-by #(mergeable? cron %) crons)
                   nil)}))
@@ -22,15 +21,15 @@
        (map #(branch crons %))
        (apply merge)))
 
-(defn ^Long count-connections
-  [connection-map]
+(defn count-connections
+  ^Long [connection-map]
   (reduce-kv (fn [total-connections type connections]
                (+ total-connections (count connections)))
              0
              connection-map))
 
-(defn ^CronExpression least-connected-node
-  [origin origin-connections node-connections]
+(defn least-connected-node
+  ^CronExpression [origin origin-connections node-connections]
   (let [node-connections (dissoc node-connections origin)
         connection-set (reduce union (vals origin-connections))]
     (->> connection-set
@@ -47,10 +46,11 @@
                               (into {}))]
     (if (empty? node-connections)
       merge-graph
-      (let [[least-connected-origin _] (reduce-kv (fn [least-connected target target-connection-count]
-                                                    (if (< (second least-connected) target-connection-count)
-                                                      least-connected
-                                                      [target target-connection-count]))
+      (let [less-connections? (fn [least-connected target target-connection-count]
+                                (if (< (second least-connected) target-connection-count)
+                                  least-connected
+                                  [target target-connection-count]))
+            [least-connected-origin _] (reduce-kv less-connections?
                                                   (first node-connections)
                                                   (rest node-connections))
             least-connected-target (least-connected-node least-connected-origin
