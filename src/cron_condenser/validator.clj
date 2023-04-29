@@ -7,6 +7,7 @@
   (:import
    [clojure.lang PersistentVector]))
 
+(def +cron-segments+ 5)
 
 (defn in-bounds?
   [^Integer lower ^Integer upper]
@@ -21,10 +22,9 @@
 (def in-month-bounds?    (in-bounds? (:lower month-bounds)    (:upper month-bounds)))
 (def in-week-day-bounds? (in-bounds? (:lower week-day-bounds) (:upper week-day-bounds)))
 
-(defn ^Boolean valid-range?
-  [^String range-str in-section-bounds?]
-  (let [range-values (->> (string/split range-str #"\-")
-                          (map ->byte))]
+(defn valid-range?
+  [range-str in-section-bounds?]
+  (let [range-values (map ->byte (string/split range-str #"\-"))]
     (and (every? (comp not nil?) range-values)
          (= (count range-values) 2)
          (let [[start end] range-values]
@@ -32,8 +32,8 @@
                 (in-section-bounds? start)
                 (in-section-bounds? end))))))
 
-(defn ^Boolean valid-step?
-  [^String step-str in-section-bounds?]
+(defn valid-step?
+  [step-str in-section-bounds?]
   (let [ratio (string/split step-str #"/")]
     (and (= (count ratio) 2)
          (= (first ratio) "*")
@@ -68,8 +68,8 @@
                :range  #(valid-range? % in-day-bounds?)
                :step   #(valid-step? % in-day-bounds?))))
 
-(defn ^Boolean valid-named-range?
-  [^String range-str ^PersistentVector names]
+(defn valid-named-range?
+  [range-str names]
   (let [range-values (string/split range-str #"\-")]
     (and (= (count range-values) 2)
          (let [[start end] (->> range-values
@@ -77,8 +77,8 @@
                                 (map inc))]
            (< start end)))))
 
-(defn ^Boolean valid-named-step?
-  [^String step-str ^PersistentVector names]
+(defn valid-named-step?
+  [step-str names]
   (let [step-values (string/split step-str #"/")]
     (and (= (count step-values) 2)
          (let [[left right] step-values]
@@ -110,7 +110,7 @@
                :named-step   #(valid-named-step? % week-days))))
 
 (defn validate-segment
-  [spec ^String segment]
+  [spec segment]
   (->> (string/split segment #",")
        (map #(s/valid? spec %))
        (reduce #(and %1 %2))))
@@ -119,22 +119,21 @@
 
 (s/def :cron/expression
   (s/and string?
-         #(= (count (string/split % #" ")) 5)
+         #(= (count (string/split % #" ")) +cron-segments+)
          #(let [segments (string/split % #" ")]
             (->> segments
                  (map validate-segment cron-specs)
                  (every? identity)))))
 
-(defn ^Boolean cron-expression?
+(defn cron-expression?
   [^String cron]
   (s/valid? :cron/expression cron))
 
-(defn ^String explain-invalid
+(defn explain-invalid
   [^String cron]
   (let [segments (string/split cron #" ")
         total-segments (count segments)]
-    (if (not= total-segments 5)
-      (str "Invalid number of segments. Found " total-segments " instead of 5!")
+    (if (= total-segments +cron-segments+)
       (->> (zipmap cron-specs segments)
            (reduce-kv (fn [errors cron-spec segment]
                         (if (not (s/valid? cron-spec segment))
@@ -142,4 +141,5 @@
                           errors))
                       [])
            (string/join ", ")
-           (str "The following segments did not pass validation: ")))))
+           (str "The following segments did not pass validation: "))
+      (str "Invalid number of segments. Found " total-segments " instead of 5!"))))

@@ -15,18 +15,14 @@
              :week-day "pink"})
 
 (defn edge
-  [edge-type
-   ^CronExpression origin
-   ^CronExpression target]
+  [edge-type ^CronExpression origin ^CronExpression target]
   [(CronExpression->str origin)
    (CronExpression->str target)
    {:color (colors edge-type)
     :label (name edge-type)}])
 
 (defn normalize-edges
-  [edge-type
-   ^CronExpression origin
-   targets]
+  [edge-type ^CronExpression origin targets]
   (mapv (partial edge edge-type origin) targets))
 
 (defn normalize-branch
@@ -46,9 +42,10 @@
 (defn normalize-graph
   [merge-graph]
   {:nodes (mapv CronExpression->str (keys merge-graph))
-   :edges (deduplicate
-           (apply concat
-                  (mapv normalize-branch merge-graph)))})
+   :edges (->> merge-graph
+               (mapv normalize-branch)
+               (apply concat)
+               deduplicate)})
 
 (defn draw-merge-graph
   [directory file-name merge-graph]

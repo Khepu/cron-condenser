@@ -2,8 +2,8 @@
   (:import [clojure.lang PersistentVector]))
 
 
-(defn ^Byte ->byte
-  [^String string]
+(defn ->byte
+  ^Byte [^String string]
   (try
     (Byte/parseByte string)
     (catch Exception _

@@ -7,8 +7,6 @@
    [cron-condenser.validator :refer :all]
    [cron-condenser.cron-expression :refer [map->CronExpression]])
   (:import
-   [clojure.lang PersistentHashSet]
-   [clojure.lang PersistentList]
    [cron_condenser.cron_expression CronExpression]))
 
 
@@ -43,9 +41,7 @@
 (defmethod expand-minute :range
   [[_ range-str]]
    (let [[start end] (parse-range range-str)]
-     (map str
-          (range start
-                 (inc end)))))
+     (map str (range start (inc end)))))
 
 (defmethod expand-minute :step
   [[_ step-str]]
@@ -74,9 +70,7 @@
 (defmethod expand-hour :range
   [[_ range-str]]
   (let [[start end] (parse-range range-str)]
-    (map str
-         (range start
-                (inc end)))))
+    (map str (range start (inc end)))))
 
 (defmethod expand-hour :step
   [[_ step-str]]
@@ -105,9 +99,7 @@
 (defmethod expand-day :range
   [[_ range-str]]
   (let [[start end] (parse-range range-str)]
-    (map str
-         (range start
-                (inc end)))))
+    (map str (range start (inc end)))))
 
 (defmethod expand-day :step
   [[_ step-str]]
@@ -136,9 +128,7 @@
 (defmethod expand-month :range
   [[_ range-str]]
   (let [[start end] (parse-range range-str)]
-    (map str
-         (range start
-                (inc end)))))
+    (map str (range start (inc end)))))
 
 (defmethod expand-month :step
   [[_ step-str]]
@@ -227,11 +217,11 @@
                 step))))
 
 (defn segment
-  ^PersistentList [^String cron-segment]
+  [cron-segment]
   (string/split cron-segment #","))
 
 (defn expand-segment
-  ^PersistentHashSet [cron-segment spec expander]
+  [cron-segment spec expander]
   (->> cron-segment
        (map segment)
        flatten

@@ -46,11 +46,11 @@
                               (into {}))]
     (if (empty? node-connections)
       merge-graph
-      (let [less-connections? (fn [least-connected target target-connection-count]
-                                (if (< (second least-connected) target-connection-count)
-                                  least-connected
-                                  [target target-connection-count]))
-            [least-connected-origin _] (reduce-kv less-connections?
+      (let [least-connected (fn [least-connected target target-connection-count]
+                              (if (< (second least-connected) target-connection-count)
+                                least-connected
+                                [target target-connection-count]))
+            [least-connected-origin _] (reduce-kv least-connected
                                                   (first node-connections)
                                                   (rest node-connections))
             least-connected-target (least-connected-node least-connected-origin
