@@ -24,7 +24,7 @@
     (apply println more)))
 
 (defn condense
-  [crons ^String draw-path]
+  [crons draw-path]
   (let [merge-graph (->> crons
                          (map str->CronExpression)
                          (map expand)
@@ -32,10 +32,10 @@
                          ->merge-graph)]
     (loop [current-graph merge-graph
            iteration 1]
-      (when (not (nil? draw-path))
+      (when draw-path
         (draw-merge-graph draw-path (str "merge-graph-" (dec iteration)) current-graph))
       (let [new-graph (least-connected-merge current-graph)]
-        (if (= current-graph new-graph)
+        (if (= (count current-graph) (count new-graph))
           current-graph
           (recur new-graph (inc iteration)))))))
 
