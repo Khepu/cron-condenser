@@ -2,8 +2,7 @@
   (:require
    [clojure.set :refer [union]])
   (:import
-   [cron_condenser.cron_expression CronExpression]
-   [clojure.lang Keyword]))
+   [cron_condenser.cron_expression CronExpression]))
 
 
 (defn equal-for?
@@ -13,7 +12,7 @@
 (defn mergeable?
   "Two crons can be merged iff they differ in only one of the columns. Returns the
   segment to merge on or nil if they cannot be merged"
-  ^Keyword [^CronExpression a ^CronExpression b]
+  [^CronExpression a ^CronExpression b]
   (cond (equal-for? a b '(:hour   :day  :month :week-day)) :minute
         (equal-for? a b '(:minute :day  :month :week-day)) :hour
         (equal-for? a b '(:minute :hour :month :week-day)) :day
