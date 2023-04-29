@@ -12,13 +12,13 @@
      ^PersistentHashSet month
      ^PersistentHashSet week-day])
 
-(defn ^CronExpression str->CronExpression
-  [^String cron-str]
+(defn str->CronExpression
+  ^CronExpression [cron-str]
   (->> (string/split cron-str #" ")
        (map hash-set)
        (apply ->CronExpression)))
 
-(defn ^String CronExpression->str
+(defn CronExpression->str
   [^CronExpression cron]
   (str (string/join "," (:minute   cron)) " "
        (string/join "," (:hour     cron)) " "
@@ -26,7 +26,7 @@
        (string/join "," (:month    cron)) " "
        (string/join "," (:week-day cron))))
 
-(defn ^String CronExpression->canonical-string
+(defn CronExpression->canonical-string
   [^CronExpression cron]
   (str (string/join "," (:minute   cron)) " "
        (string/join "," (:hour     cron)) " "
